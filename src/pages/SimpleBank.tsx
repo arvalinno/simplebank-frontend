@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import './App.css';
+import '../App.css';
 
 function SimpleBank() {
     return(
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-green-200 to-blue-300 p-6">
             <h1 className="text-4xl font-bold text-gray-900">Welcome to Simple Bank</h1>
             <p className="text-gray-700 mt-2">A minimal online banking system.</p>
 
