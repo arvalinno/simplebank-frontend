@@ -2,27 +2,32 @@ import { useState } from 'react';
 import '../App.css';
 import { api } from '../api/api';
 import InputField from '../components/InputField';
+import { useNavigate } from 'react-router-dom';
+import Button from '../components/Button';
 
 function RegisterPage() {
 
-    // "username": "arva",
-    // "full_name": "arvalinno",
-    // "password": "arva123",
-    // "email": "arva@gmail.com",
-
+    const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [full_name, setFullname] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
     const handleRegister = async () => {
+        setLoading(true);
+        setError("");
+
         try {
             const response = await api.post("/v1/create_user", { username, full_name, password, email});
             console.log("Register successful:", response.data);
-            alert("Register Successful!");
+            navigate("/login"); 
         } catch (error) {
             console.error("Register failed:", error);
             alert("Register Failed");
+        } finally {
+            setLoading(false);
         };
     };
 
@@ -54,11 +59,11 @@ function RegisterPage() {
                     onChange={(e) => setPassword(e.target.value)} 
                     value={password}   
                 />
-                <button 
+                <Button 
                     onClick={handleRegister}
-                    className="w-full bg-blue-500 text-white p-3 mt-4 rounded hover:bg-blue-600">
-                Register
-                </button>
+                    loading={loading}
+                    text="Register"
+                />
             </div>
         </div>
     );

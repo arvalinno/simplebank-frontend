@@ -13,7 +13,7 @@ function Button({ text, onClick, loading }: ButtonProps) {
       className="w-full mt-4 bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300 disabled:opacity-50"
       disabled={loading}
     >
-      {loading ? "Logging in..." : text}
+      {loading ? "Loading ..." : text}
     </button>
   );
 };

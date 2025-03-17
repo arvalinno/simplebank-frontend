@@ -19,7 +19,7 @@ function LoginPage() {
         try {
             const response = await api.post("/v1/login_user", { username, password });
             console.log("Login successful:", response.data);
-            navigate("/bank-homepage"); // Redirect after success
+            navigate("/bank-homepage");
         } catch (error) {
             console.error("Login failed:", error);
             setError("Invalid username or password.");
