@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import '../App.css';
 import { api } from '../api/api';
+import InputField from '../components/InputField';
 
 function RegisterPage() {
 
@@ -26,32 +27,32 @@ function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-green-200 to-red-400 p-6">
-            <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
-                <h2 className="text-2xl font-bold text-gray-900">Register</h2>                
-                <input
-                type="text"
-                placeholder="Username"
-                className="w-full p-3 mt-4 border rounded"
-                onChange={(e) => setUsername(e.target.value)}                
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-green-600 to-blue-800 p-6">
+            <div className="bg-white bg-opacity-10 backdrop-blur-lg shadow-lg p-8 rounded-2xl max-w-sm w-full">
+                <h2 className="text-3xl font-bold text-white text-center">Register</h2>                
+                <InputField
+                    type="text"
+                    label="Username"
+                    onChange={(e) => setUsername(e.target.value)} 
+                    value={username}               
                 />
-                <input
-                type="text"
-                placeholder="Full Name"
-                className="w-full p-3 mt-2 border rounded"
-                onChange={(e) => setFullname(e.target.value)}                
+                <InputField
+                    type="text"
+                    label="Full Name"
+                    onChange={(e) => setFullname(e.target.value)} 
+                    value={full_name}         
                 />
-                <input
-                type="email"
-                placeholder="Email"
-                className="w-full p-3 mt-2 border rounded"
-                onChange={(e) => setEmail(e.target.value)}                
+                <InputField
+                    type="email"
+                    label="Email"
+                    onChange={(e) => setEmail(e.target.value)} 
+                    value={email}       
                 />
-                <input
-                type="password"
-                placeholder="Password"
-                className="w-full p-3 mt-2 border rounded"
-                onChange={(e) => setPassword(e.target.value)}
+                <InputField
+                    type="password"
+                    label="Password"
+                    onChange={(e) => setPassword(e.target.value)} 
+                    value={password}   
                 />
                 <button 
                     onClick={handleRegister}
