@@ -18,8 +18,16 @@ function LoginPage() {
 
         try {
             const response = await api.post("/v1/login_user", { username, password });
-            console.log("Login successful:", response.data);
-            navigate("/bank-homepage");
+            const { access_token, refresh_token } = response.data;
+
+            if (access_token && refresh_token) {
+                localStorage.setItem("access_token", access_token);
+                localStorage.setItem("refresh_token", refresh_token);
+                console.log("Login successful:", response.data);
+                navigate("/bank-homepage");;
+            } else {
+                setError("Login failed!");
+            }
         } catch (error) {
             console.error("Login failed:", error);
             setError("Invalid username or password.");
