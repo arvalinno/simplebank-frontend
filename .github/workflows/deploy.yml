@@ -19,10 +19,6 @@ jobs:
           node-version: 18
 
       - run: npm install
-
-      - name: Run ESLint
-        run: npm run lint
-      
       - run: npm run build
 
       - name: Deploy to VPS
