@@ -1,0 +1,40 @@
+name: Deploy React App to VPS
+
+on:
+  push:
+    branches:
+      - main  # Deploy when pushing to main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js and Dependencies
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - run: npm install
+      - run: npm run build
+
+      - name: Deploy to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST_NAME_ADDRESS }}
+          username: ${{ secrets.HOST_NAME_USERNAME }}
+          key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          source: "build/*"
+          target: "/var/www/simple-bank"
+
+      - name: Restart Nginx
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: arva888.xyz
+          username: arvalinno
+          key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          script: |
+            sudo systemctl restart nginx

@@ -4,7 +4,6 @@ import Homepage from "./pages/Homepage";
 import SimpleBank from "./pages/SimpleBank";
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import BankHome from './pages/BankHomePage';
 import BankHomePage from './pages/BankHomePage';
 
 function App() {

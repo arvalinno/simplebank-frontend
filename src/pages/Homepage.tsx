@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import '../App.css';
+import { useEffect } from 'react';
 
 function Homepage() {
   return (
@@ -26,9 +27,7 @@ function Homepage() {
         </Link>
         </div>
       </div>
-    </div>
-
-    
+    </div>    
   );
 }
 
