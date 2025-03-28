@@ -29,7 +29,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           script: |
             sudo mkdir -p /var/www/simple-bank
-            sudo chown -R root:root /var/www/simple-bank
+            sudo chown -R chown -R $USER:$USER /var/www/simple-bank
             sudo chmod -R 777 /var/www/simple-bank  # Temporarily allow full access
 
       - name: Deploy to VPS
