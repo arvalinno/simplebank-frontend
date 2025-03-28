@@ -25,7 +25,7 @@ function RegisterPage() {
             navigate("/login"); 
         } catch (error) {
             console.error("Register failed:", error);
-            alert("Register Failed");
+            setError("Register Failed");
         } finally {
             setLoading(false);
         };
@@ -34,7 +34,10 @@ function RegisterPage() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-green-600 to-blue-800 p-6">
             <div className="bg-white bg-opacity-10 backdrop-blur-lg shadow-lg p-8 rounded-2xl max-w-sm w-full">
-                <h2 className="text-3xl font-bold text-white text-center">Register</h2>                
+                <h2 className="text-3xl font-bold text-white text-center">Register</h2>  
+
+                {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
+
                 <InputField
                     type="text"
                     label="Username"
