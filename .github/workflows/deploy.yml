@@ -21,7 +21,7 @@ jobs:
       - run: npm install
       - run: npm run build
 
-      - name: Ensure target directory exists
+      - name: Ensure correct permissions before deployment
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.HOST_NAME_ADDRESS }}
@@ -29,7 +29,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           script: |
             sudo mkdir -p /var/www/simple-bank
-            sudo chown -R www-data:www-data /var/www/simple-bank
+            sudo chmod -R 777 /var/www/simple-bank  # Temporarily allow full access
 
       - name: Deploy to VPS
         uses: appleboy/scp-action@v0.1.7
@@ -39,6 +39,16 @@ jobs:
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           source: "build/*"
           target: "/var/www/simple-bank"
+
+      - name: Restore correct permissions after deployment
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST_NAME_ADDRESS }}
+          username: ${{ secrets.HOST_NAME_USERNAME }}
+          key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          script: |
+            sudo chown -R www-data:www-data /var/www/simple-bank
+            sudo chmod -R 755 /var/www/simple-bank  # Secure permissions
 
       - name: Restart Nginx
         uses: appleboy/ssh-action@v1.0.0
