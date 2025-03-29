@@ -30,7 +30,6 @@ jobs:
           script: |
             sudo mkdir -p /var/www/simple-bank
             sudo chown -R chown -R $USER:$USER /var/www/simple-bank
-            sudo chmod -R 777 /var/www/simple-bank  # Temporarily allow full access
 
       - name: Deploy to VPS
         uses: appleboy/scp-action@v0.1.7
