@@ -35,38 +35,46 @@ function BankHomePage() {
     }
   }, []);
 
-  useEffect(() => {
-    const fetchAccounts = async () => {
-      const accessToken = localStorage.getItem("access_token");
+  const fetchAccounts = async () => {
+    const accessToken = localStorage.getItem("access_token")
+    
+    if (!accessToken) {
+        console.error("No access token found, redirecting to login.");
+        navigate("/login");
+        return;
+    }
 
-      if (!accessToken) {
-          console.error("No access token found, redirecting to login.");
-          navigate("/login");
-          return;
-      }
-
-      try {
-          const response = await api.get(`/v1/list_accounts`, {
-              headers: { Authorization: `Bearer ${accessToken}` },
-              params: { page_id: 1, page_size: 4 },
-          });
-
-          console.log("Accounts:", response.data);
-          setAccounts(response.data.accounts);
-          setLoading(false);
-      } catch (error) {
-          console.error("Error fetching accounts:", error);
-      }
-    };
-
+    try {
+        const response = await api.get(`/v1/list_accounts`, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+            params: { page_id: 1, page_size: 4 },
+        });
+        setAccounts(response.data.accounts || []);
+        setLoading(false);
+    } catch (error) {
+        console.error("Error fetching accounts:", error);
+    }
+  };
+  
+  useEffect(() => {  
     fetchAccounts();
   }, []);
 
-  const handleAddAccount = async () => {
+  const [showCurrencyOptions, setshowCurrencyOptions] = useState(false);
+  const [currency, setCurrency] = useState<string>("USD");
+
+  const handleAddAccount = async (currency: string) => {
     if (accounts.length >= 3) return;
     try {
-      const response = await api.post("/v1/create_account");
+      const accessToken = localStorage.getItem("access_token")
+      
+      const response = await api.post("/v1/create_account",
+        {currency},
+        {headers: { Authorization: `Bearer ${accessToken}` }}
+      );
       setAccounts([...accounts, response.data]);
+      
+      fetchAccounts();
     } catch (error) {
       console.error("Failed to add account:", error);
     }
@@ -78,6 +86,7 @@ function BankHomePage() {
 
   const handleTopUp = async (accountId: string) => {
     try {
+      const accessToken = localStorage.getItem("access_token");
       const orderId = Math.floor(10000000 + Math.random() * 90000000).toString();
       const grossAmt = amount;
       const firstName = accounts[0].owner;
@@ -85,7 +94,9 @@ function BankHomePage() {
 
       console.log("orderId : ", orderId);
 
-      const response = await api.post("/v1/request_token", {orderId, grossAmt, firstName, email});
+      const response = await api.post("/v1/request_token", 
+        {orderId, grossAmt, firstName, email},
+        {headers: { Authorization: `Bearer ${accessToken}` }});
       setMidtransToken(response.data);
       window.snap.pay(response.data.token);
     } catch (error) {
@@ -100,7 +111,8 @@ function BankHomePage() {
 
       {loading ? (
         <p className="text-lg text-gray-700">Loading accounts...</p>
-      ) : accounts.length === 0 ? (
+      ) : !accounts ||accounts?.length === 0 ? 
+      (
         <p className="text-lg text-gray-700">You don't have any accounts yet.</p>
       ) : (
         <div className="w-full max-w-md bg-white p-6 rounded-3xl shadow-xl border border-gray-200">
@@ -157,17 +169,56 @@ function BankHomePage() {
         </div>
       )}
 
-      {accounts.length < 3 && (
+      { (!accounts || accounts.length < 3) && (
         <button
-          onClick={handleAddAccount}
+          onClick={() => {
+              setshowCurrencyOptions(true)
+            }
+          }
           className="mt-6 bg-green-500 text-white px-6 py-3 rounded-xl shadow-lg text-lg font-semibold transition hover:bg-green-600"
         >
           + Add New Account
         </button>
       )}
+
+      {showCurrencyOptions && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-md">
+            <h2 className="text-lg font-bold">Select Currency</h2>
+            <select
+              className="border p-2 w-full mt-2"
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+            >
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="CAD">CAD</option>
+            </select>
+            <div className="flex justify-end space-x-2 mt-4">
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded"
+                onClick={() => setshowCurrencyOptions(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-green-500 text-white px-4 py-2 rounded"
+                onClick={() => {
+                  handleAddAccount(currency!);
+                  setshowCurrencyOptions(false);
+                }}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
 
-    
+
+       
   );
 };
 
